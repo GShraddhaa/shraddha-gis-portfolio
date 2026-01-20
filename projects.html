@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Projects — Portfolio</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <div class="navbar">
+      <a class="brand" href="index.html">
+        Shraddha Gourishetty
+        <span class="brand-sub">GIS Analyst</span>
+      </a>  
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="skills.html">Skills</a>
+        <a href="projects.html">Projects</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="card" style="margin-bottom:12px;">
+      <h1 style="margin:0 0 6px;">Projects</h1>
+      <p class="small">Click a project to view the case study at the bottom.</p>
+    </div>
+  
+    <div id="projectsGrid" class="projects-grid"></div>
+  
+    <div style="height:16px;"></div>
+  
+    <div id="projectDetailBottom">
+      <div class="card">Select a project to see details.</div>
+    </div>
+  </main>
+  
+
+  <footer class="container footer">
+    © <span id="year"></span> Shraddha Gourishetty
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
