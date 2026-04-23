@@ -13,7 +13,14 @@ export const PROFILE = {
   // HOME (short + punchy)
   headline: "Enterprise GIS, automation, and environmental analysis with measurable impact.",
   shortOverview:
-    "GIS Analyst specializing in enterprise GIS, automation, and decision-driven spatial analysis, with proven impact across public safety, public health, and climate initiatives.",
+    "I build spatial workflows that actually get used, by emergency planners, climate funders, and executive teams making decisions for over a million people. Two years in government and climate tech, working across ArcGIS Enterprise, Python automation, and everything in between.",
+
+  stats: [
+    { value: "$150K–200K", label: "climate funding supported by my GIS research" },
+    { value: "~40%",       label: "reduction in enterprise QA processing time" },
+    { value: "1.5M",       label: "residents affected by analyses I delivered" },
+    { value: "96%",        label: "accuracy on wildfire risk classification model" }
+  ],
 
   highlights: [
     {
@@ -36,7 +43,7 @@ export const PROFILE = {
 
   // ABOUT (deeper + structured)
   aboutIntro:
-    "I’m a results-driven GIS Analyst with 2+ years of experience across government, climate tech, and environmental work, focused on building geospatial workflows that scale and stay reliable.",
+    "I got into GIS because maps are how you make complex things real. I stayed because there's something satisfying about writing a script that catches errors automatically, or handing a map to a decision-maker who genuinely changes their plan because of it.",
 
   aboutStory: `
 Over the past two years, I’ve worked across government agencies and a climate tech startup, building geospatial solutions that do more than visualize data, they solve operational problems and support real decisions.
@@ -124,7 +131,9 @@ export const SKILLS = [
 
 export const CERTIFICATIONS = [
   { id: "drone", label: "Basic Drone Pilot License (Canada)" },
-  { id: "google-da", label: "Google Data Analytics Certificate" }
+  { id: "google-da", label: "Google Data Analytics Certificate" },
+  { id: "arcgis-pro-assoc", label: "ArcGIS Pro Associate (In Progress)" },
+  { id: "fme-basic", label: "FME Form Basic (In Progress)" }
 ];
 
 
@@ -425,6 +434,11 @@ export const PROJECTS = [
       "Strengthened the role of GIS as both an operational and strategic decision-support system"
     ],
   
+    beforeAfter: {
+      before: "QA ran manually — a GIS analyst would open each dataset, check attributes and geometry by hand, and log issues in a spreadsheet. A full validation pass took several hours and results varied depending on who ran it.",
+      after: "A Python/ArcPy script runs the full check automatically before any dataset gets published: attribute completeness, spatial integrity, schema consistency. It flags issues and logs them in a structured report. The same pass now takes under 30 minutes and catches things humans miss."
+    },
+
     status: "Completed",
   
     /* reportUrl: "", */
@@ -438,6 +452,90 @@ export const PROJECTS = [
       "cartography",
       "geodatabases",
 
+    ]
+  },
+
+  {
+    id: "traffic-collision-storymap",
+
+    anchor: "traffic-collision-storymap",
+
+    title: "Toronto Traffic Collision Analysis",
+
+    type: "academic",
+
+    context: "Toronto, Ontario | ArcGIS StoryMap | Public Safety & Urban Planning",
+
+    problem:
+      "Traffic collision data in Toronto is publicly available but rarely communicated in a way that lets planners, advocates, or the public actually understand where risk is concentrated and why.",
+
+    approach: [
+      "Aggregating and cleaning Toronto open data collision records for spatial analysis",
+      "Identifying high-risk corridors and intersections using hotspot and density analysis",
+      "Building an ArcGIS StoryMap to present findings with interactive maps, charts, and narrative context",
+      "Structuring the story for two audiences: technical planners and general public"
+    ],
+
+    outcome:
+      "An interactive StoryMap that makes collision patterns legible and actionable — showing not just where collisions happen, but what conditions they share.",
+
+    impact: [
+      "Demonstrates ability to turn raw open data into a clear public-facing spatial narrative",
+      "Showcases ArcGIS StoryMap as a communication tool for non-technical audiences"
+    ],
+
+    status: "In Progress",
+
+    /* reportUrl: "", */
+
+    skills: [
+      "arcgis",
+      "storymaps",
+      "spatial-analysis",
+      "cartography",
+      "dashboards"
+    ]
+  },
+
+  {
+    id: "last-mile-delivery-monitoring",
+
+    anchor: "last-mile-delivery-monitoring",
+
+    title: "Last Mile Delivery Monitoring & Optimization System",
+
+    type: "academic",
+
+    context: "Field Operations | Survey123 & ArcGIS Field Maps",
+
+    problem:
+      "Last mile delivery is one of the most expensive and least visible parts of logistics. Without real-time spatial data on delivery status, route performance, and field conditions, operations teams are flying blind.",
+
+    approach: [
+      "Designing Survey123 forms for structured field data capture — delivery status, exceptions, timestamps, and location",
+      "Building ArcGIS Field Maps workflows for route tracking and real-time driver location",
+      "Connecting field data to a live dashboard for operations monitoring",
+      "Identifying optimization opportunities through spatial analysis of route efficiency and delivery clustering"
+    ],
+
+    outcome:
+      "A working end-to-end system for capturing, visualizing, and analyzing last mile delivery performance using Esri's field data collection tools.",
+
+    impact: [
+      "Shows practical GIS applied to a real operational logistics problem",
+      "Demonstrates Survey123 and Field Maps integration — skills directly relevant to field data workflows in utilities, infrastructure, and municipal operations"
+    ],
+
+    status: "In Progress",
+
+    /* reportUrl: "", */
+
+    skills: [
+      "arcgis",
+      "spatial-analysis",
+      "dashboards",
+      "storymaps",
+      "etl"
     ]
   }
 

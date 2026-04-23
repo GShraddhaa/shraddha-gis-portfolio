@@ -1,10 +1,10 @@
 import { PROFILE, SKILLS, PROJECTS, SKILL_CATEGORIES, CERTIFICATIONS } from "./data.js";
 
+/* ─── UTILS ──────────────────────────────────────────── */
 function setActiveNav() {
   const file = location.pathname.split("/").pop() || "index.html";
   document.querySelectorAll("nav a").forEach(a => {
-    const href = a.getAttribute("href");
-    if (href === file) a.classList.add("active");
+    if (a.getAttribute("href") === file) a.classList.add("active");
   });
 }
 
@@ -14,161 +14,101 @@ function el(html) {
   return t.content.firstElementChild;
 }
 
-function findProjectsBySkill(skillId) {
-  return PROJECTS.filter(p => p.skills.includes(skillId));
-}
-
-function skillName(skillId) {
-  return SKILLS.find(s => s.id === skillId)?.name || skillId;
-}
-
-function escapeHtml(s = "") {
+function esc(s = "") {
   return String(s)
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+    .replaceAll('"', "&quot;");
 }
 
-function renderBullets(items = []) {
-  if (!Array.isArray(items) || items.length === 0) return "";
-  const lis = items.map(x => `<li>${escapeHtml(x)}</li>`).join("");
-  return `<ul style="margin:8px 0 0; padding-left:18px; color:#333;">${lis}</ul>`;
+function skillName(id) {
+  return SKILLS.find(s => s.id === id)?.label || SKILLS.find(s => s.id === id)?.name || id;
 }
 
-function renderSection(title, bodyHtml) {
-  if (!bodyHtml || bodyHtml.trim() === "") return "";
-  return `
-    <div style="margin-top:14px;">
-      <div class="small" style="font-weight:700; color:#111; margin-bottom:6px;">${escapeHtml(title)}</div>
-      ${bodyHtml}
-    </div>
-  `;
+function projectsForSkill(skillId) {
+  return PROJECTS.filter(p => (p.skills || []).includes(skillId));
 }
 
-function renderProjectDetail(projectId, mountId) {
-  const mount = document.getElementById(mountId);
-  if (!mount) return;
-
-  const p = PROJECTS.find(x => x.id === projectId);
-  if (!p) {
-    mount.innerHTML = `<div class="card">Select a project to see details.</div>`;
-    return;
-  }
-
-  const skillsBadges = (p.skills || [])
-    .map(id => `<span class="badge">${escapeHtml(skillName(id))}</span>`)
-    .join(" ");
-
-  // Support BOTH structured case study fields and older "overview" field
-  const context = p.context ? `<p class="small" style="margin:6px 0 0;">${escapeHtml(p.context)}</p>` : "";
-
-  const problemHtml = p.problem
-    ? `<p style="margin:0; color:#333;">${escapeHtml(p.problem)}</p>`
-    : "";
-
-  const approachHtml = renderBullets(p.approach);
-
-  const outcomeHtml = p.outcome
-    ? `<p style="margin:0; color:#333;">${escapeHtml(p.outcome)}</p>`
-    : (p.overview ? `<p style="margin:0; color:#333;">${escapeHtml(p.overview)}</p>` : "");
-
-  const impactHtml = renderBullets(p.impact);
-
-  const reportHtml = p.reportUrl
-    ? `<a class="inline" href="${escapeHtml(p.reportUrl)}" target="_blank" rel="noopener">View report/results</a>`
-    : `<span class="small">No report link yet.</span>`;
-
-  mount.innerHTML = `
-    <div class="card">
-      <div class="row">
-        <div>
-          <h2 style="margin:0;">${escapeHtml(p.title || "Untitled Project")}</h2>
-          ${context}
-        </div>
-        <span class="badge">${escapeHtml(p.status || "Status")}</span>
-      </div>
-
-      ${renderSection("Problem", problemHtml)}
-      ${renderSection("Approach", approachHtml)}
-      ${renderSection("Outcome", outcomeHtml)}
-      ${renderSection("Impact", impactHtml)}
-
-      <div style="margin-top:14px;">
-        <div class="small" style="font-weight:700; color:#111; margin-bottom:6px;">Artifacts</div>
-        ${reportHtml}
-      </div>
-
-      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:14px;">
-        ${skillsBadges}
-      </div>
-    </div>
-  `;
-}
-
+/* ─── HOME ───────────────────────────────────────────── */
 function initHome() {
   const mount = document.getElementById("homeProfile");
   if (!mount) return;
 
-  
+  const highlightsHtml = (PROFILE.highlights || []).map(h => `
+    <a href="projects.html#${h.target}" class="highlight-item">
+      <div class="highlight-dot"></div>
+      <span class="highlight-text">${esc(h.text)}</span>
+    </a>
+  `).join("");
 
-  const highlightsHtml = (PROFILE.highlights || [])
-  .map(h => `
-    <li>
-      <a
-        href="projects.html#${h.target}"
-        class="highlight-link"
-      >
-        ${escapeHtml(h.text)}
-      </a>
-    </li>
-  `)
-  .join("");
-
-  
   const photoHtml = PROFILE.profileImage
-  ? `
-    <div class="map-card">
-      <img
-        src="${escapeHtml(PROFILE.profileImage)}"
-        alt="Profile photo of ${escapeHtml(PROFILE.name)}"
-        class="profile-photo"
-      />
-      <div class="map-caption">
-        43.4516° N, 80.4925° W · Kitchener, ON
-      </div>
-    </div>
-  `
-  : "";
+    ? `<img src="${esc(PROFILE.profileImage)}" alt="Shraddha Gourishetty" class="profile-photo" />`
+    : `<div class="profile-photo" style="display:flex;align-items:center;justify-content:center;color:var(--ink-3);font-size:13px;">No photo</div>`;
+
+  const statsHtml = (PROFILE.stats || []).map(s => `
   
+    <div class="stat-item">
+      <div class="stat-number">${esc(s.value)}</div>
+      <div class="stat-label">${esc(s.label)}</div>
+    </div>
+  `).join("");
 
   mount.innerHTML = `
-    <div class="card">
-      <p class="kicker">${escapeHtml(PROFILE.location || "")}</p>
-      <h1 style="margin:0 0 8px;">${escapeHtml(PROFILE.name || "")}</h1>
-      <p class="small" style="margin:0 0 10px;"><strong>${escapeHtml(PROFILE.role || "")}</strong></p>
+    <div class="home-grid stagger">
+      <div class="hero-card">
+        <p class="kicker">${esc(PROFILE.location)}</p>
+        <h1 class="hero-headline">${esc(PROFILE.name)}</h1>
+        <p class="hero-body">${esc(PROFILE.shortOverview)}</p>
+        <div class="hero-ctas">
+          <a class="button" href="projects.html">View Projects</a>
+          <a class="button ghost" href="skills.html">Skills</a>
+          <a class="button ghost" href="about.html">About Me</a>
+        </div>
 
-      <p class="tagline" style="margin:0 0 10px;">${escapeHtml(PROFILE.headline || "")}</p>
-      <p class="tagline" style="margin:0 0 14px;">${escapeHtml(PROFILE.shortOverview || "")}</p>
+        ${statsHtml ? `<div class="stats-row">${statsHtml}</div>` : ""}
 
-      <div class="card" style="padding:14px; border-radius:14px; background:#fafafa;">
-        <div class="small" style="font-weight:700; color:#111; margin-bottom:6px;">Highlights</div>
-        <ul style="margin:0; padding-left:18px;">
+        <div class="highlights">
+          <h3>Selected highlights</h3>
           ${highlightsHtml}
-        </ul>
+        </div>
       </div>
 
-      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top: 14px;">
-        <a class="button" href="projects.html">Projects</a>
-        <a class="button ghost" href="skills.html">Skills</a>
-        <a class="button ghost" href="about.html">About</a>
-      </div>
+      <div class="sidebar-card stagger">
+        ${photoHtml}
+        <div class="coord-tag">Kitchener, ON</div>
 
+        <div>
+          <h3>Connect</h3>
+          <div class="contact-links">
+            <a class="contact-link" href="${esc(PROFILE.resumeUrl)}" target="_blank" rel="noopener">
+              <span class="contact-link-label">Resume / CV</span>
+              <span class="contact-link-arrow">↗</span>
+            </a>
+            <a class="contact-link" href="${esc(PROFILE.linkedinUrl)}" target="_blank" rel="noopener">
+              <span class="contact-link-label">LinkedIn</span>
+              <span class="contact-link-arrow">↗</span>
+            </a>
+            <a class="contact-link" href="${esc(PROFILE.githubUrl)}" target="_blank" rel="noopener">
+              <span class="contact-link-label">GitHub</span>
+              <span class="contact-link-arrow">↗</span>
+            </a>
+            <a class="contact-link" href="${esc(PROFILE.blogUrl)}" target="_blank" rel="noopener">
+              <span class="contact-link-label">Blog</span>
+              <span class="contact-link-arrow">↗</span>
+            </a>
+            <a class="contact-link" href="mailto:${esc(PROFILE.email)}">
+              <span class="contact-link-label">${esc(PROFILE.email)}</span>
+              <span class="contact-link-arrow">✉</span>
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   `;
 }
 
+/* ─── ABOUT ──────────────────────────────────────────── */
 function initAbout() {
   const mount = document.getElementById("aboutProfile");
   if (!mount) return;
@@ -177,68 +117,66 @@ function initAbout() {
     .trim()
     .split("\n\n")
     .filter(Boolean)
-    .map(p => `<p class="about-paragraph">${escapeHtml(p)}</p>`)
+    .map(p => `<p class="about-paragraph">${esc(p)}</p>`)
     .join("");
 
   const whatHtml = (PROFILE.whatIBring || [])
-    .map(x => `<li>${escapeHtml(x)}</li>`)
+    .map(x => `<li>${esc(x)}</li>`)
     .join("");
 
-  const endLineHtml = PROFILE.endLine
-  ? `<p class="about-endline">${escapeHtml(PROFILE.endLine)}</p>`
-  : "";
-  
   mount.innerHTML = `
-    <div class="card">
-      <p class="kicker">About</p>
-      <h1 style="margin:0 0 8px;">${escapeHtml(PROFILE.name || "")}</h1>
+    <div class="about-grid stagger">
+      <div class="card" style="padding: 36px 40px;">
+        <p class="kicker">About</p>
+        <h1 style="margin-bottom: 20px;">${esc(PROFILE.name)}</h1>
 
-      <p class="about-paragraph" style="font-weight:600;">
-        ${escapeHtml(PROFILE.aboutIntro || "")}
-      </p>
+        <p class="about-intro">${esc(PROFILE.aboutIntro)}</p>
 
-      ${storyParas}
+        ${storyParas}
 
-      <div style="margin-top:14px;">
-        <div class="small" style="font-weight:700; color:#111; margin-bottom:6px;">What I bring</div>
-        <ul style="margin:0; padding-left:18px;">
-          ${whatHtml}
-        </ul>
+        <div style="margin-top: 24px;">
+          <h3>What I bring</h3>
+          <ul class="what-i-bring">${whatHtml}</ul>
+        </div>
+
+        ${PROFILE.endLine ? `<p class="about-endline">${esc(PROFILE.endLine)}</p>` : ""}
       </div>
 
-      ${endLineHtml}
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <div class="card" style="padding: 24px;">
+          <h3>Links</h3>
+          <div class="contact-links" style="gap:8px; display:grid;">
+            <a class="contact-link" href="${esc(PROFILE.resumeUrl)}" target="_blank" rel="noopener">
+              <span class="contact-link-label">Resume / CV</span>
+              <span class="contact-link-arrow">↗</span>
+            </a>
+            <a class="contact-link" href="${esc(PROFILE.linkedinUrl)}" target="_blank" rel="noopener">
+              <span class="contact-link-label">LinkedIn</span>
+              <span class="contact-link-arrow">↗</span>
+            </a>
+            <a class="contact-link" href="${esc(PROFILE.githubUrl)}" target="_blank" rel="noopener">
+              <span class="contact-link-label">GitHub</span>
+              <span class="contact-link-arrow">↗</span>
+            </a>
+            <a class="contact-link" href="${esc(PROFILE.blogUrl)}" target="_blank" rel="noopener">
+              <span class="contact-link-label">Blog</span>
+              <span class="contact-link-arrow">↗</span>
+            </a>
+            <a class="contact-link" href="mailto:${esc(PROFILE.email)}">
+              <span class="contact-link-label">${esc(PROFILE.email)}</span>
+              <span class="contact-link-arrow">✉</span>
+            </a>
+          </div>
+        </div>
 
-      <hr/>
-
-      <div class="list">
-        <div class="item">
-          <div class="row">
-            <span><strong>Resume</strong></span>
-            <a class="inline" href="${escapeHtml(PROFILE.resumeUrl || "#")}" target="_blank" rel="noopener">Open</a>
-          </div>
-        </div>
-        <div class="item">
-          <div class="row">
-            <span><strong>LinkedIn</strong></span>
-            <a class="inline" href="${escapeHtml(PROFILE.linkedinUrl || "#")}" target="_blank" rel="noopener">Visit</a>
-          </div>
-        </div>
-        <div class="item">
-          <div class="row">
-            <span><strong>GitHub</strong></span>
-            <a class="inline" href="${escapeHtml(PROFILE.githubUrl || "#")}" target="_blank" rel="noopener">Visit</a>
-          </div>
-        </div>
-        <div class="item">
-          <div class="row">
-            <span><strong>Blog</strong></span>
-            <a class="inline" href="${escapeHtml(PROFILE.blogUrl || "#")}" target="_blank" rel="noopener">Visit</a>
-          </div>
-        </div>
-        <div class="item">
-          <div class="row">
-            <span><strong>Email</strong></span>
-            <a class="inline" href="mailto:${escapeHtml(PROFILE.email || "")}">${escapeHtml(PROFILE.email || "")}</a>
+        <div class="card" style="padding: 24px;">
+          <h3>Certifications</h3>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            ${(CERTIFICATIONS || []).map(c => `
+              <div style="padding: 10px 14px; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; color: var(--ink-2);">
+                <span style="color:var(--accent); margin-right:8px;">◈</span>${esc(c.label)}
+              </div>
+            `).join("")}
           </div>
         </div>
       </div>
@@ -246,30 +184,17 @@ function initAbout() {
   `;
 }
 
+/* ─── SKILLS ─────────────────────────────────────────── */
 function initSkills() {
   const listMount = document.getElementById("skillsList");
   const relatedMount = document.getElementById("relatedProjects");
   if (!listMount || !relatedMount) return;
 
-  // Render the right panel default state
-  relatedMount.innerHTML = `<div class="card">Hover or click a skill to see related projects.</div>`;
-
-  // Helper: projects that use a skill
-  function projectsForSkill(skillId) {
-    return PROJECTS.filter(p => (p.skills || []).includes(skillId));
-  }
-
-  // Build the left panel: categories + bubbles
   listMount.innerHTML = "";
 
   SKILL_CATEGORIES.forEach(cat => {
-    const section = el(`
-      <div class="skill-section">
-        <div class="skill-section-title">${cat.title}</div>
-        <div class="skill-bubbles" id="cat-${cat.id}"></div>
-      </div>
-    `);
-
+    const section = el(`<div class="skill-section"></div>`);
+    section.innerHTML = `<div class="skill-section-title">${esc(cat.title)}</div><div class="skill-bubbles" id="cat-${cat.id}"></div>`;
     const bubbleWrap = section.querySelector(`#cat-${cat.id}`);
 
     (cat.skills || []).forEach(skillId => {
@@ -277,92 +202,203 @@ function initSkills() {
       const count = projectsForSkill(skillId).length;
 
       const bubble = el(`
-        <button class="skill-bubble" type="button" aria-label="${label}">
+        <button class="skill-bubble" type="button">
           <span class="skill-label">${label}</span>
           <span class="skill-meta">${count}</span>
         </button>
       `);
 
       const showRelated = () => {
+        // Active state
+        document.querySelectorAll(".skill-bubble").forEach(b => b.classList.remove("active"));
+        bubble.classList.add("active");
+
         const related = projectsForSkill(skillId);
 
-        relatedMount.innerHTML = `
-          <div class="card">
-            <div class="row">
-              <h2 style="margin:0;">${label}</h2>
-              <span class="badge">${related.length} project(s)</span>
-            </div>
-            <p class="small">Click a project to view the case study.</p>
-            <div id="skillProjectsList" class="list"></div>
-            <hr/>
-            <div id="skillProjectDetail"></div>
-          </div>
-        `;
-
-        const skillProjectsList = document.getElementById("skillProjectsList");
-
         if (related.length === 0) {
-          skillProjectsList.innerHTML = `<div class="item"><div class="small">No projects linked yet.</div></div>`;
-          document.getElementById("skillProjectDetail").innerHTML =
-            `<div class="card">Add this skill to a project’s <code>skills</code> array to show it here.</div>`;
+          relatedMount.innerHTML = `
+            <div>
+              <div style="font-size:13px; font-weight:700; color:var(--ink); margin-bottom:4px;">${esc(label)}</div>
+              <p class="small" style="margin-top:8px;">No projects linked yet.</p>
+            </div>
+          `;
           return;
         }
 
-        related.forEach(p => {
-          const subtitle = (p.context ?? p.overview ?? "").trim();
-
-          const item = el(`
-            <button class="item" style="text-align:left; cursor:pointer;">
-              <div class="row">
-                <div>
-                  <div><strong>${p.title}</strong></div>
-                  <div class="small">${subtitle}</div>
-                </div>
-                <span class="badge">${p.status || ""}</span>
+        relatedMount.innerHTML = `
+          <div>
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+              <div>
+                <div style="font-family:var(--font-display); font-size:20px; color:var(--ink);">${esc(label)}</div>
+                <div class="small" style="margin-top:2px;">${related.length} project${related.length !== 1 ? "s" : ""} use this skill</div>
               </div>
+              <span class="badge badge-accent">${related.length}</span>
+            </div>
+            <div id="skillProjectsList"></div>
+            <div id="skillProjectDetail" class="project-detail-box"></div>
+          </div>
+        `;
+
+        const listEl = document.getElementById("skillProjectsList");
+
+        related.forEach((p, i) => {
+          const subtitle = (p.context ?? p.overview ?? "").trim();
+          const item = el(`
+            <button class="related-project-item ${i === 0 ? "active-item" : ""}" type="button">
+              <div class="related-project-title">${esc(p.title)}</div>
+              <div class="related-project-sub">${esc(subtitle)}</div>
             </button>
           `);
-
-          item.addEventListener("click", () => renderProjectDetail(p.id, "skillProjectDetail"));
-          skillProjectsList.appendChild(item);
+          item.addEventListener("click", () => {
+            document.querySelectorAll(".related-project-item").forEach(x => x.classList.remove("active-item"));
+            item.classList.add("active-item");
+            renderProjectDetail(p.id, "skillProjectDetail");
+          });
+          listEl.appendChild(item);
         });
 
-        // default project detail
         renderProjectDetail(related[0].id, "skillProjectDetail");
       };
 
-      // Hover = preview, Click = lock (same behavior, simple and intuitive)
       bubble.addEventListener("mouseenter", showRelated);
       bubble.addEventListener("click", showRelated);
-
       bubbleWrap.appendChild(bubble);
     });
 
     listMount.appendChild(section);
   });
 
-  // Certifications section (separate)
-  const certSection = el(`
-    <div class="skill-section">
-      <div class="skill-section-title">Certifications</div>
-      <div class="skill-bubbles" id="cert-bubbles"></div>
-    </div>
-  `);
-
+  // Certifications
+  const certSection = el(`<div class="skill-section"></div>`);
+  certSection.innerHTML = `<div class="skill-section-title">Certifications</div><div class="skill-bubbles" id="cert-bubbles"></div>`;
   const certWrap = certSection.querySelector("#cert-bubbles");
 
   (CERTIFICATIONS || []).forEach(c => {
-    const bubble = el(`
-      <div class="skill-bubble cert-bubble" role="note">
-        <span class="skill-label">${c.label}</span>
+    certWrap.appendChild(el(`
+      <div class="skill-bubble cert-bubble">
+        <span class="skill-label">${esc(c.label)}</span>
       </div>
-    `);
-    certWrap.appendChild(bubble);
+    `));
   });
 
   listMount.appendChild(certSection);
 }
 
+function statusBadgeClass(status) {
+  if (!status) return "badge";
+  if (status === "Completed") return "badge badge-green";
+  if (status === "In Progress") return "badge badge-yellow";
+  return "badge";
+}
+
+/* ─── PROJECT DETAIL ─────────────────────────────────── */
+function renderProjectDetail(projectId, mountId) {
+  const mount = document.getElementById(mountId);
+  if (!mount) return;
+
+  const p = PROJECTS.find(x => x.id === projectId);
+  if (!p) {
+    mount.innerHTML = `<p class="small">Select a project to see details.</p>`;
+    return;
+  }
+
+  const skillBadges = (p.skills || [])
+    .map(id => `<span class="badge">${esc(skillName(id))}</span>`)
+    .join("");
+
+  const approachHtml = Array.isArray(p.approach) && p.approach.length
+    ? `<ul class="detail-bullets">${p.approach.map(a => `<li>${esc(a)}</li>`).join("")}</ul>`
+    : "";
+
+  const impactHtml = Array.isArray(p.impact) && p.impact.length
+    ? `<div class="detail-impact-grid">${p.impact.map(i => `<div class="impact-item">${esc(i)}</div>`).join("")}</div>`
+    : "";
+
+  const artifactHtml = p.reportUrl
+    ? `<a class="inline" href="${esc(p.reportUrl)}" target="_blank" rel="noopener">Open report / results ↗</a>`
+    : `<span class="small">No report linked yet.</span>`;
+
+  // Map image — shown prominently if provided
+  const imageHtml = p.image
+    ? `<div class="detail-map-image">
+        <img src="${esc(p.image)}" alt="${esc(p.title)} map output" />
+        ${p.imageCaption ? `<div class="detail-map-caption">${esc(p.imageCaption)}</div>` : ""}
+      </div>`
+    : "";
+
+  // Before / After — show as a two-column comparison if provided
+  const beforeAfterHtml = p.beforeAfter
+    ? `<div class="detail-section">
+        <div class="detail-section-label">Before vs. After</div>
+        <div class="before-after-grid">
+          <div class="before-after-box before-box">
+            <div class="before-after-label">Before</div>
+            <p>${esc(p.beforeAfter.before)}</p>
+          </div>
+          <div class="before-after-box after-box">
+            <div class="before-after-label">After</div>
+            <p>${esc(p.beforeAfter.after)}</p>
+          </div>
+        </div>
+      </div>`
+    : "";
+
+  mount.innerHTML = `
+    <div class="project-detail-card">
+      <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+        <div>
+          <p class="kicker" style="margin-bottom:6px;">${esc(p.context || "")}</p>
+          <h2 style="margin-bottom:0;">${esc(p.title || "Untitled")}</h2>
+        </div>
+        <span class="${statusBadgeClass(p.status)}">${esc(p.status || "")}</span>
+      </div>
+
+      ${imageHtml}
+
+      ${p.problem ? `
+        <div class="detail-section">
+          <div class="detail-section-label">Problem</div>
+          <p class="detail-outcome">${esc(p.problem)}</p>
+        </div>
+      ` : ""}
+
+      ${approachHtml ? `
+        <div class="detail-section">
+          <div class="detail-section-label">Approach</div>
+          ${approachHtml}
+        </div>
+      ` : ""}
+
+      ${beforeAfterHtml}
+
+      ${p.outcome ? `
+        <div class="detail-section">
+          <div class="detail-section-label">Outcome</div>
+          <p class="detail-outcome">${esc(p.outcome)}</p>
+        </div>
+      ` : ""}
+
+      ${impactHtml ? `
+        <div class="detail-section">
+          <div class="detail-section-label">Impact</div>
+          ${impactHtml}
+        </div>
+      ` : ""}
+
+      <div class="detail-section">
+        <div class="detail-section-label">Artifacts</div>
+        ${artifactHtml}
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-section-label">Skills Used</div>
+        <div class="skills-chips">${skillBadges}</div>
+      </div>
+    </div>
+  `;
+}
+
+/* ─── PROJECTS ───────────────────────────────────────── */
 function initProjects() {
   const gridMount = document.getElementById("projectsGrid");
   const detailMount = document.getElementById("projectDetailBottom");
@@ -376,60 +412,51 @@ function initProjects() {
   renderProjectSection("Professional Experience", professional, gridMount, detailMount);
   renderProjectSection("Academic & Independent Projects", academic, gridMount, detailMount);
 
-  // Default detail: first professional project if available, else first academic project
   const first = professional[0] || academic[0];
   if (first) renderProjectDetail(first.id, "projectDetailBottom");
 
+  // Hash routing
   const hash = window.location.hash.replace("#", "");
   if (hash) {
-    const targetProject = PROJECTS.find(p => p.anchor === hash);
-    if (targetProject) {
+    const target = PROJECTS.find(p => p.anchor === hash);
+    if (target) {
       const cardEl = document.getElementById(`project-${hash}`);
       if (cardEl) {
-        cardEl.scrollIntoView({
-          behavior: "smooth",
-          block: "center"
-        });
-  
-        // 🔹 Highlight the card briefly
-        cardEl.classList.add("highlighted");
         setTimeout(() => {
-          cardEl.classList.remove("highlighted");
-        }, 2000);
+          cardEl.scrollIntoView({ behavior: "smooth", block: "center" });
+          cardEl.classList.add("highlighted");
+          setTimeout(() => cardEl.classList.remove("highlighted"), 2000);
+        }, 100);
       }
-  
-      // Open the project details at the bottom
-      renderProjectDetail(targetProject.id, "projectDetailBottom");
+      renderProjectDetail(target.id, "projectDetailBottom");
     }
-  }  
-
+  }
 }
 
 function renderProjectSection(title, projects, gridMount, detailMount) {
   if (!projects || projects.length === 0) return;
 
-  // Section header
-  gridMount.appendChild(el(`<div class="project-section-title">${escapeHtml(title)}</div>`));
+  gridMount.appendChild(el(`<div class="project-section-title">${esc(title)}</div>`));
 
-  // Section grid (3 per row via your .projects-grid CSS)
-  const sectionGrid = el(`<div class="projects-grid"></div>`);
+  const sectionGrid = el(`<div class="projects-grid stagger"></div>`);
   gridMount.appendChild(sectionGrid);
 
   projects.forEach(p => {
     const subtitle = (p.context ?? p.overview ?? "").trim();
     const tagsHtml = (p.skills || [])
-      .slice(0, 5)
-      .map(id => `<span class="badge">${escapeHtml(skillName(id))}</span>`)
-      .join(" ");
+      .slice(0, 4)
+      .map(id => `<span class="badge">${esc(skillName(id))}</span>`)
+      .join("");
 
     const card = el(`
-      <button class="project-card" id="project-${p.anchor}" type="button">
-        <div class="row project-card-header">
-          <div style="min-width:0;">
-            <div class="project-title">${escapeHtml(p.title || "Untitled Project")}</div>
-            <p class="project-subtitle">${escapeHtml(subtitle)}</p>
+      <button class="project-card" id="project-${p.anchor || p.id}" type="button">
+        ${p.image ? `<div class="project-card-image"><img src="${esc(p.image)}" alt="${esc(p.title)}" /></div>` : ""}
+        <div>
+          <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:8px;">
+            <div class="project-title">${esc(p.title || "Untitled")}</div>
+            <span class="${statusBadgeClass(p.status)}" style="flex-shrink:0;">${esc(p.status || "")}</span>
           </div>
-          <span class="badge">${escapeHtml(p.status || "")}</span>
+          <p class="project-subtitle">${esc(subtitle)}</p>
         </div>
         <div class="project-tags">${tagsHtml}</div>
       </button>
@@ -444,16 +471,17 @@ function renderProjectSection(title, projects, gridMount, detailMount) {
   });
 }
 
-
+/* ─── FOOTER YEAR ────────────────────────────────────── */
 function initFooterYear() {
-  const y = document.getElementById("year");
-  if (y) y.textContent = new Date().getFullYear();
+  document.querySelectorAll("#year").forEach(el => {
+    el.textContent = new Date().getFullYear();
+  });
 }
 
+/* ─── INIT ───────────────────────────────────────────── */
 document.addEventListener("DOMContentLoaded", () => {
   setActiveNav();
   initFooterYear();
-
   initHome();
   initAbout();
   initSkills();

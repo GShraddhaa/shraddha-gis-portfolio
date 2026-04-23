@@ -3,17 +3,17 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Skills — Portfolio</title>
+  <title>Skills — Shraddha Gourishetty</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header>
     <div class="navbar">
       <a class="brand" href="index.html">
-        Shraddha Gourishetty
+        <span class="brand-name">Shraddha Gourishetty</span>
         <span class="brand-sub">GIS Analyst</span>
-      </a>  
-    <nav>
+      </a>
+      <nav>
         <a href="index.html">Home</a>
         <a href="about.html">About</a>
         <a href="skills.html">Skills</a>
@@ -22,25 +22,33 @@
     </div>
   </header>
 
-  <main class="container">
-    <div class="grid">
-      <section>
-        <div class="card">
-          <h1 style="margin:0 0 6px;">Skills</h1>
-          <p class="small">Click a skill to see related projects, then click a project for details.</p>
-        </div>
-        <div style="height:12px;"></div>
-        <div id="skillsList" class="list"></div>
-      </section>
+  <main class="container fade-in">
+    <div style="margin-bottom: 24px;">
+      <p class="kicker">Technical Expertise</p>
+      <h1 style="margin-bottom: 8px;">Skills</h1>
+      <p style="max-width: 52ch;">Hover a skill to preview related projects. Click to explore the full case study.</p>
+    </div>
 
-      <section id="relatedProjects">
-        <div class="card">Select a skill to see projects.</div>
-      </section>
+    <div class="skills-layout">
+      <div>
+        <div id="skillsList"></div>
+      </div>
+      <div class="skills-panel">
+        <div class="skills-panel-inner" id="relatedProjects">
+          <div class="panel-empty">
+            <div>
+              <div style="font-size:28px; margin-bottom:8px; opacity:0.3;">◈</div>
+              Hover a skill to see<br>related projects
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </main>
 
   <footer class="container footer">
-    © <span id="year"></span> Shraddha Gourishetty
+    <span>© <span id="year"></span> Shraddha Gourishetty</span>
+    <span style="color:var(--ink-3); font-size:12px;">Kitchener, Ontario</span>
   </footer>
 
   <script type="module" src="app.js"></script>

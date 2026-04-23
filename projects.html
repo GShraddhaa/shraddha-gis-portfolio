@@ -3,17 +3,17 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Projects — Portfolio</title>
+  <title>Projects — Shraddha Gourishetty</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header>
     <div class="navbar">
       <a class="brand" href="index.html">
-        Shraddha Gourishetty
+        <span class="brand-name">Shraddha Gourishetty</span>
         <span class="brand-sub">GIS Analyst</span>
-      </a>  
-    <nav>
+      </a>
+      <nav>
         <a href="index.html">Home</a>
         <a href="about.html">About</a>
         <a href="skills.html">Skills</a>
@@ -22,24 +22,27 @@
     </div>
   </header>
 
-  <main class="container">
-    <div class="card" style="margin-bottom:12px;">
-      <h1 style="margin:0 0 6px;">Projects</h1>
-      <p class="small">Click a project to view the case study at the bottom.</p>
+  <main class="container fade-in">
+    <div class="projects-header">
+      <p class="kicker">Case Studies</p>
+      <h1 style="margin-bottom: 10px;">Projects</h1>
+      <p style="max-width: 52ch; margin: 0;">Click any project to view the full case study below - problem, approach, outcome, and measurable impact.</p>
     </div>
-  
-    <div id="projectsGrid" class="projects-grid"></div>
-  
-    <div style="height:16px;"></div>
-  
+
+    <div id="projectsGrid"></div>
+
+    <div style="height: 20px;"></div>
+
     <div id="projectDetailBottom">
-      <div class="card">Select a project to see details.</div>
+      <div class="project-detail-card" style="display:flex; align-items:center; justify-content:center; min-height:200px;">
+        <p style="color:var(--ink-3);">Select a project above to view the full case study.</p>
+      </div>
     </div>
   </main>
-  
 
   <footer class="container footer">
-    © <span id="year"></span> Shraddha Gourishetty
+    <span>© <span id="year"></span> Shraddha Gourishetty</span>
+    <span style="color:var(--ink-3); font-size:12px;">Kitchener, Ontario</span>
   </footer>
 
   <script type="module" src="app.js"></script>
