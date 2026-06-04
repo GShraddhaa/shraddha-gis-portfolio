@@ -16,7 +16,7 @@ export default defineConfig({
     },
     prerender: {
       enabled: true,
-      crawlLinks: true,
+      crawlLinks: false,
     },
     pages: [{ path: "/shraddha-gis-portfolio/" }],
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
