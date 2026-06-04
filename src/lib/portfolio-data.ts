@@ -278,7 +278,7 @@ def validate(fc: str) -> dict:
       "Supported environmental risk monitoring and climate adaptation planning",
     ],
     status: "Completed",
-    reportUrl: "/reports/ShraddhaGourishetty_SoilMoistureAnalysis.pdf",
+    reportUrl: `${import.meta.env.BASE_URL}ShraddhaGourishetty_SoilMoistureAnalysis.pdf`,
     skills: ["gee", "python", "qgis", "remote-sensing", "spatial-analysis", "cartography", "raster/vector-workflows", "etl", "gee-api", "geopandas", "numpy", "matplotlib", "thematic-mapping"],
   },
   {
@@ -301,7 +301,7 @@ def validate(fc: str) -> dict:
       "Improved wildfire preparedness through clear spatial prioritization",
     ],
     status: "Completed",
-    reportUrl: "/reports/ShraddhaGourishetty_ClassificationModel.pdf",
+    reportUrl: `${import.meta.env.BASE_URL}ShraddhaGourishetty_ClassificationModel.pdf`,
     skills: ["python", "ml", "spatial-analysis", "cartography", "qgis", "risk-assessment", "etl", "scikit-learn", "pandas", "numpy", "geopandas", "matplotlib", "thematic-mapping", "technical-writing"],
   },
   {
@@ -327,7 +327,7 @@ def validate(fc: str) -> dict:
       "Provided data-driven evidence to support facility expansion decisions for emergency response planning",
     ],
     status: "Completed",
-    reportUrl: "/reports/ShraddhaGourishetty_NetworkAnalysis.pdf",
+    reportUrl: `${import.meta.env.BASE_URL}ShraddhaGourishetty_NetworkAnalysis.pdf`,
     skills: ["arcgis", "network-analysis", "spatial-analysis", "infrastructure-planning", "sql", "arcgis-dashboards", "thematic-mapping", "technical-writing"],
   },
   {
@@ -346,7 +346,7 @@ def validate(fc: str) -> dict:
     outcome: "Recommended the corridor alignment that minimized agricultural and residential disruption.",
     impact: ["Enabled data-driven infrastructure planning using spatial databases"],
     status: "Completed",
-    reportUrl: "/reports/ShraddhaGourishetty_QGISandPostgreSQL.pdf",
+    reportUrl: `${import.meta.env.BASE_URL}ShraddhaGourishetty_QGISandPostgreSQL.pdf`,
     skills: ["arcgis", "sql", "spatial-analysis", "geoprocessing-tools", "postgis", "lidar", "photogrammetry", "dji-terra", "2d-3d-mapping", "thematic-mapping", "technical-writing"],
   },
   {
