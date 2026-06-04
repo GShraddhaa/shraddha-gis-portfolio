@@ -14,7 +14,7 @@ export const PROFILE = {
   role: "GIS Analyst",
   location: "Kitchener, Ontario",
   email: "shraddhagourishetty@gmail.com",
-  resumeUrl: "/reports/ShraddhaGourishetty_Resume.pdf",
+  resumeUrl: `${import.meta.env.BASE_URL}ShraddhaGourishetty_Resume.pdf`, 
   linkedinUrl: "https://www.linkedin.com/in/shraddha-gourishetty-562397220/",
   githubUrl: "https://github.com/GShraddhaa/",
   blogUrl: "https://uwaterloo.ca/co-operative-education/blog/post/creating-content-with-shraddha-behind-the-scenes",
